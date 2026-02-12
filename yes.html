@@ -10,7 +10,8 @@
 
   body{
     min-height:100vh;
-    overflow-x:hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     font-family:'Lato',sans-serif;
     color:#fff;
     text-align:center;
@@ -48,7 +49,9 @@
     position:relative; z-index:2;
     padding:20px 24px 80px;
     max-width:550px;
+    width:100%;
     margin:0 auto;
+    box-sizing:border-box;
     animation:fadeIn .9s ease;
   }
   @keyframes fadeIn{

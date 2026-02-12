@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Game 💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    height:100vh;
+    overflow:hidden;
+    font-family:'Lato',sans-serif;
+    color:#fff;
+    background:linear-gradient(135deg,#2c1b2e 0%,#4a1942 30%,#6b2d5b 60%,#3d1a3a 100%);
+    position:relative;
+  }
+  body::after{
+    content:'';
+    position:fixed; inset:0;
+    background:radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,.5) 100%);
+    pointer-events:none; z-index:1;
+  }
+
+  /* petals */
+  .petal{
+    position:fixed;
+    width:10px; height:10px;
+    background:radial-gradient(circle, rgba(255,180,190,.85), rgba(255,100,130,.3));
+    border-radius:50% 0 50% 0;
+    opacity:.55;
+    animation:fall linear infinite;
+    pointer-events:none; z-index:0;
+  }
+  @keyframes fall{
+    0% { transform:translateY(-10vh) rotate(0deg); opacity:.65; }
+    100%{ transform:translateY(110vh) rotate(720deg); opacity:0; }
+  }
+
+  /* header card */
+  .header{
+    position:relative; z-index:2;
+    text-align:center;
+    padding:36px 24px 0;
+  }
+  .header h1{
+    font-family:'Playfair Display',serif;
+    font-size:2.1em;
+    text-shadow:0 2px 10px rgba(0,0,0,.4);
+    margin-bottom:6px;
+  }
+  .divider{
+    width:50px; height:1px;
+    background:linear-gradient(90deg, transparent, rgba(255,180,190,.7), transparent);
+    margin:10px auto 12px;
+  }
+  .score-row{
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-size:1.25em;
+    color:rgba(255,255,255,.85);
+  }
+  .score-row span{
+    color:#f06292;
+    font-style:normal;
+    font-weight:700;
+  }
+
+  /* heart target */
+  #heart{
+    position:absolute;
+    font-size:52px;
+    cursor:pointer;
+    z-index:3;
+    user-select:none;
+    transition:transform .12s cubic-bezier(.4,0,.2,1);
+    filter:drop-shadow(0 4px 8px rgba(0,0,0,.35));
+  }
+  #heart:hover{ transform:scale(1.15); }
+  #heart.pop { transform:scale(.6); }
+
+  /* win overlay */
+  .win{
+    position:fixed; inset:0;
+    z-index:10;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:transparent;
+    animation:fadeIn .6s ease;
+  }
+  @keyframes fadeIn{
+    from{ opacity:0; }
+    to  { opacity:1; }
+  }
+  .win-card{
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(16px);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:28px;
+    padding:52px 44px;
+    text-align:center;
+    box-shadow:0 20px 50px rgba(0,0,0,.4);
+    animation:slideUp .5s .2s cubic-bezier(.4,0,.2,1) both;
+    position:relative;
+    z-index:12;
+  }
+  @keyframes slideUp{
+    from{ opacity:0; transform:translateY(24px); }
+    to  { opacity:1; transform:translateY(0); }
+  }
+  .win-card h1{
+    font-family:'Playfair Display',serif;
+    font-size:2.6em;
+    text-shadow:0 2px 12px rgba(0,0,0,.4);
+    margin-bottom:10px;
+  }
+  .win-card .divider{ margin:12px auto; }
+  .win-card p{
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-size:1.3em;
+    color:rgba(255,255,255,.88);
+    margin:12px 0;
+  }
+  .win-card .sub{
+    font-family:'Lato',sans-serif;
+    font-style:normal;
+    font-size:.95em;
+    color:rgba(255,220,225,.75);
+    letter-spacing:.04em;
+    margin-top:18px;
+  }
+  .reward-ticket{
+    display:inline-block;
+    margin-top:24px;
+    padding:20px 32px;
+    background:linear-gradient(135deg, rgba(255,180,190,.2), rgba(255,100,130,.15));
+    border:2px solid rgba(255,180,190,.5);
+    border-radius:16px;
+    backdrop-filter:blur(8px);
+    text-align:center;
+  }
+  .reward-ticket .emoji{
+    font-size:2.4em;
+    display:block;
+    margin-bottom:10px;
+  }
+  .reward-ticket .label{
+    font-family:'Playfair Display',serif;
+    font-size:1.15em;
+    color:rgba(255,255,255,.9);
+    font-weight:700;
+  }
+  .reward-ticket .desc{
+    font-family:'Lato',sans-serif;
+    font-size:.85em;
+    color:rgba(255,220,225,.75);
+    margin-top:6px;
+    letter-spacing:.03em;
+  }
+  .back-btn{
+    display:inline-block;
+    margin-top:28px;
+    padding:12px 32px;
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:50px;
+    color:rgba(255,255,255,.88);
+    font-family:'Lato',sans-serif;
+    font-size:.95em;
+    letter-spacing:.07em;
+    text-decoration:none;
+    cursor:pointer;
+    transition:all .3s;
+  }
+  .back-btn:hover{ background:rgba(255,255,255,.18); transform:translateY(-2px); }
+
+  /* fireworks canvas */
+  #fw{
+    position:fixed; top:0; left:0;
+    width:100%; height:100%;
+    z-index:10;
+    pointer-events:none;
+  }
+
+  /* number modal */
+  .modal-overlay{
+    position:fixed; inset:0;
+    z-index:20;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:rgba(0,0,0,.6);
+    backdrop-filter:blur(4px);
+    animation:fadeIn .5s ease;
+  }
+  .modal-card{
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(16px);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:28px;
+    padding:48px 44px;
+    text-align:center;
+    box-shadow:0 20px 50px rgba(0,0,0,.4);
+    animation:slideUp .5s cubic-bezier(.4,0,.2,1);
+    max-width:400px;
+  }
+  .modal-card h2{
+    font-family:'Playfair Display',serif;
+    font-size:2em;
+    text-shadow:0 2px 12px rgba(0,0,0,.4);
+    margin-bottom:12px;
+    color:#fff;
+  }
+  .modal-card .divider{ margin:14px auto 20px; }
+  .modal-card p{
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-size:1.1em;
+    color:rgba(255,255,255,.85);
+    margin-bottom:20px;
+  }
+  .modal-card input{
+    width:100%;
+    padding:14px 18px;
+    font-size:1.2em;
+    font-family:'Lato',sans-serif;
+    background:rgba(255,255,255,.08);
+    border:2px solid rgba(255,180,190,.4);
+    border-radius:12px;
+    color:#fff;
+    text-align:center;
+    transition:all .3s;
+    box-sizing:border-box;
+  }
+  .modal-card input:focus{
+    outline:none;
+    border-color:rgba(255,180,190,.7);
+    background:rgba(255,255,255,.12);
+    box-shadow:0 0 20px rgba(255,180,190,.2);
+  }
+  .modal-card input::placeholder{
+    color:rgba(255,255,255,.5);
+  }
+  .modal-btn{
+    display:inline-block;
+    margin-top:24px;
+    padding:13px 40px;
+    background:linear-gradient(135deg, rgba(255,100,130,.3), rgba(255,180,190,.2));
+    border:2px solid rgba(255,180,190,.5);
+    border-radius:50px;
+    color:#fff;
+    font-family:'Playfair Display',serif;
+    font-size:1.1em;
+    font-weight:700;
+    letter-spacing:.07em;
+    cursor:pointer;
+    transition:all .3s;
+  }
+  .modal-btn:hover{
+    background:linear-gradient(135deg, rgba(255,100,130,.45), rgba(255,180,190,.35));
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(255,100,130,.3);
+  }
+  .modal-btn:active{ transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- header -->
+<div class="header">
+  <h1>Catch <span id="target">7</span> Hearts 💖</h1>
+  <div class="divider"></div>
+  <div class="score-row">Score: <span id="score">0</span> / <span id="target-display">7</span></div>
+</div>
+
+<!-- moving heart -->
+<div id="heart">💖</div>
+
+<!-- number modal -->
+<div class="modal-overlay" id="numberModal">
+  <div class="modal-card">
+    <h2>How Many Questions? 💕</h2>
+    <div class="divider"></div>
+    <p>Choose how many love questions you want to answer!</p>
+    <input type="number" id="numberInput" min="1" max="10" placeholder="Enter 1-10..." autofocus>
+    <button class="modal-btn" id="submitBtn">Start Game 💖</button>
+  </div>
+</div>
+
+<!-- Q&A modal -->
+<div class="modal-overlay" id="qaModal" style="display:none;">
+  <div class="modal-card">
+    <h2 id="questionText">Question</h2>
+    <div class="divider"></div>
+    <input type="text" id="answerInput" placeholder="Your answer..." style="margin-top:20px;">
+    <button class="modal-btn" id="answerBtn">Submit Answer 💖</button>
+    <p id="feedback" style="margin-top:16px; font-size:.95em; color:#ffa07a;"></p>
+  </div>
+</div>
+
+<script>
+let score = 0;
+let targetHearts = 0;
+let questionIndex = 0;
+let awaitingQuestion = false;
+const heart = document.getElementById('heart');
+const scoreEl = document.getElementById('score');
+const targetEl = document.getElementById('target');
+const targetDisplayEl = document.getElementById('target-display');
+const numberModal = document.getElementById('numberModal');
+const numberInput = document.getElementById('numberInput');
+const submitBtn = document.getElementById('submitBtn');
+const qaModal = document.getElementById('qaModal');
+const questionText = document.getElementById('questionText');
+const answerInput = document.getElementById('answerInput');
+const answerBtn = document.getElementById('answerBtn');
+const feedback = document.getElementById('feedback');
+
+// ── Love Q&A bank (10 questions) ──
+const questions = [
+  { q: "What's my favorite color?", a: "the color you wear" },
+  { q: "What do I love most about you?", a: "everything" },
+  { q: "What was your name saved in my phone", a: "miss bakshi" },
+  { q: "What was our first date?", a: "pandel hopping" },
+  { q: "What makes me happy most", a: "your presence" },
+  { q: "What's my favorite thing to do with you?", a: "kisses" },
+  { q: "When did we first meet? (month)", a: "september" },
+  { q: "What I love the most about you?", a: "your eyes" },
+  { q: "What makes me smile the most?", a: "you" },
+  { q: "Complete: You are my ___", a: "everything" }
+];
+
+// Shuffle questions randomly
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+let shuffledQuestions = shuffleArray(questions);
+
+// ── modal setup ──
+function submitNumber(){
+  let num = numberInput.value;
+  if(!num || isNaN(num) || num < 1) num = 5;
+  if(num > 10) num = 10;
+  targetHearts = parseInt(num);
+  targetEl.textContent = targetHearts;
+  targetDisplayEl.textContent = targetHearts;
+  numberModal.style.display = 'none';
+  heart.style.display = 'block';
+  
+  // Shuffle questions when game starts
+  shuffledQuestions = shuffleArray(questions);
+  questionIndex = 0;
+}
+submitBtn.addEventListener('click', submitNumber);
+numberInput.addEventListener('keypress', e => { if(e.key === 'Enter') submitNumber(); });
+
+// ── place heart randomly ──
+function place(){
+  heart.style.left = (8 + Math.random() * 72) + 'vw';
+  heart.style.top  = (15 + Math.random() * 65) + 'vh';
+}
+place();
+
+// ── click heart ──
+heart.addEventListener('click', () => {
+  if(awaitingQuestion) return; // prevent clicking during Q&A
+  
+  // Hide heart and show question
+  heart.style.display = 'none';
+  awaitingQuestion = true;
+  showQuestion();
+});
+
+// ── show Q&A ──
+function showQuestion(){
+  if(questionIndex >= shuffledQuestions.length) {
+    shuffledQuestions = shuffleArray(questions); // reshuffle if we run out
+    questionIndex = 0;
+  }
+  
+  const currentQ = shuffledQuestions[questionIndex];
+  questionText.textContent = currentQ.q;
+  answerInput.value = '';
+  feedback.textContent = '';
+  qaModal.style.display = 'flex';
+  answerInput.focus();
+}
+
+// ── check answer ──
+function checkAnswer(){
+  const currentQ = shuffledQuestions[questionIndex];
+  const userAnswer = answerInput.value.trim().toLowerCase();
+  const correctAnswer = currentQ.a.toLowerCase();
+  
+  if(userAnswer === correctAnswer || userAnswer.includes(correctAnswer)){
+    // Correct answer!
+    score++;
+    scoreEl.textContent = score;
+    feedback.textContent = '✓ Correct! You earned a heart 💖';
+    feedback.style.color = '#7bed9f';
+    
+    setTimeout(() => {
+      qaModal.style.display = 'none';
+      questionIndex++;
+      awaitingQuestion = false;
+      
+      if(score === targetHearts){
+        win();
+      } else {
+        heart.style.display = 'block';
+        place();
+      }
+    }, 1500);
+    
+  } else {
+    // Wrong answer
+    feedback.textContent = '✗ Try again!';
+    feedback.style.color = '#ff6b81';
+    answerInput.value = '';
+  }
+}
+
+answerBtn.addEventListener('click', checkAnswer);
+answerInput.addEventListener('keypress', e => { if(e.key === 'Enter') checkAnswer(); });
+
+// ── WIN ──
+function win(){
+  const rewards = [
+    { emoji:'🤗', label:'Free Hug Ticket',      desc:'Redeem for unlimited hugs today' },
+    { emoji:'💋', label:'Free Kiss Ticket',     desc:'Valid for sweet kisses anytime' },
+    { emoji:'🍫', label:'Free Chocolate Ticket',desc:'Treat yourself to chocolate together' },
+    { emoji:'🌹', label:'Free Flower Ticket',   desc:'Get fresh flowers from me' }
+  ];
+  const reward = rewards[Math.floor(Math.random() * rewards.length)];
+
+  // Replace page content (but keep canvas for fireworks)
+  document.body.innerHTML = `
+    <div style="position:fixed;inset:0;z-index:0;background:linear-gradient(135deg,#2c1b2e 0%,#4a1942 30%,#6b2d5b 60%,#3d1a3a 100%);"></div>
+    <canvas id="fw"></canvas>
+    <audio id="win-music" autoplay loop>
+      <source src="music.mp3" type="audio/mpeg">
+    </audio>
+    <div class="win">
+      <div class="win-card">
+        <h1>🎉 You Won!</h1>
+        <div class="divider"></div>
+        <p>You are the bestest ❤️</p>
+        <div class="reward-ticket">
+          <div class="emoji">${reward.emoji}</div>
+          <div class="label">${reward.label}</div>
+          <div class="desc">${reward.desc}</div>
+        </div>
+        <p class="sub" style="margin-top:20px;">I Love You ✨</p>
+        <a href="yes.html" class="back-btn" onclick="document.getElementById('win-music').pause();">← Back</a>
+      </div>
+    </div>`;
+
+  // ── single unified fireworks engine ──
+  const canvas = document.getElementById('fw');
+  const ctx = canvas.getContext('2d');
+
+  function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  let particles = [];
+  const hues = [350, 0, 330, 20, 10, 340];
+  let burstCount = 0;
+
+  function burst(){
+    const x = Math.random() * canvas.width;
+    const y = 60 + Math.random() * canvas.height * 0.5;
+    const hue = hues[Math.floor(Math.random() * hues.length)];
+    burstCount++;
+
+    if(burstCount % 4 === 0){
+      // ── heart-shaped burst ──
+      for(let i = 0; i < 100; i++){
+        const t = (Math.PI * 2) * (i / 100);
+        // parametric heart
+        const hx =  16 * Math.pow(Math.sin(t), 3);
+        const hy = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+        particles.push({
+          x, y,
+          dx: hx * 0.4,
+          dy: hy * 0.4,
+          life: 90,
+          maxLife: 90,
+          hue,
+          size: 2.5
+        });
+      }
+    } else {
+      // ── normal radial burst ──
+      for(let i = 0; i < 100; i++){
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 1.5 + Math.random() * 5;
+        particles.push({
+          x, y,
+          dx: Math.cos(angle) * speed,
+          dy: Math.sin(angle) * speed,
+          life: 70 + Math.random() * 50,
+          maxLife: 120,
+          hue,
+          size: 2 + Math.random() * 2
+        });
+      }
+    }
+
+
+  }
+
+  // ── animation loop ──
+  function draw(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for(let i = particles.length - 1; i >= 0; i--){
+      const p = particles[i];
+      p.x  += p.dx;
+      p.y  += p.dy;
+      p.dy += 0.05;       // gravity
+      p.life--;
+
+      if(p.life <= 0){ particles.splice(i, 1); continue; }
+
+      const alpha = p.life / p.maxLife;
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = `hsl(${p.hue}, 90%, 65%)`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+
+  // fire a few bursts immediately so it doesn't look empty
+  burst(); burst(); burst();
+
+  // continuous bursts every 450 ms
+  setInterval(burst, 450);
+
+  // start drawing
+  draw();
+}
+
+// ── petals ──
+for(let i = 0; i < 14; i++){
+  const p = document.createElement('div');
+  p.className = 'petal';
+  p.style.left = Math.random() * 100 + 'vw';
+  p.style.animationDuration = (6 + Math.random() * 8) + 's';
+  p.style.animationDelay    = (-Math.random() * 10) + 's';
+  p.style.width = p.style.height = (7 + Math.random() * 9) + 'px';
+  document.body.appendChild(p);
+}
+</script>
+</body>
+</html>

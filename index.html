@@ -214,10 +214,10 @@
 <body>
 
 <!-- audio elements -->
-<audio id="bgMusic" loop style="display:none">
+<audio id="bgMusic" loop preload="auto">
   <source src="music2.mp3" type="audio/mpeg">
 </audio>
-<audio id="myVoice" style="display:none">
+<audio id="myVoice" preload="auto">
   <source src="voice.mp3" type="audio/mpeg">
 </audio>
 
@@ -237,13 +237,21 @@
 
 <script>
 // ── background music on first interaction ──
-(function startMusic(){
-  const bg=document.getElementById('bgMusic');
-  bg.volume=.28;
-  function tryPlay(){ bg.play().catch(()=>{}); }
-  tryPlay();                          // attempt autoplay
-  document.addEventListener('click', tryPlay, {once:true}); // fallback
-})();
+// ── SAFE background music start ──
+const bgMusic = document.getElementById("bgMusic");
+bgMusic.volume = 0.28;
+
+// play on ANY first interaction
+function startBG() {
+  bgMusic.play().catch(()=>{});
+  
+  document.removeEventListener("click", startBG);
+  document.removeEventListener("touchstart", startBG);
+}
+
+document.addEventListener("click", startBG);
+document.addEventListener("touchstart", startBG);
+
 
 // ── NO button runs away (avoids YES button) + YES grows ──
 const noBtn=document.getElementById('no');

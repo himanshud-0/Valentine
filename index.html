@@ -305,8 +305,13 @@ function placeNo(){
     if(!collidesYes && !collidesCard) break;
   }
 }
-placeNo();                              // initial spot
-noBtn.onmouseover=placeNo;
+placeNo();
+// Desktop hover
+noBtn.addEventListener("mouseover", placeNo);
+// Mobile touch
+noBtn.addEventListener("touchstart", placeNo);
+// Extra safety (covers more devices)
+noBtn.addEventListener("pointerdown", placeNo);
 
 // ── sparkle trail ──
 document.addEventListener('mousemove',e=>{

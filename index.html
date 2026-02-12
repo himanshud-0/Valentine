@@ -313,6 +313,19 @@ noBtn.addEventListener("touchstart", placeNo);
 // Extra safety (covers more devices)
 noBtn.addEventListener("pointerdown", placeNo);
 
+document.addEventListener("touchmove", (e) => {
+  const touch = e.touches[0];
+  const rect = noBtn.getBoundingClientRect();
+
+  const distX = Math.abs(touch.clientX - (rect.left + rect.width/2));
+  const distY = Math.abs(touch.clientY - (rect.top + rect.height/2));
+
+  if (distX < 80 && distY < 80) {
+    placeNo();
+  }
+});
+
+
 // ── sparkle trail ──
 document.addEventListener('mousemove',e=>{
   if(Math.random()>.75){

@@ -455,16 +455,17 @@
 
 
 <!-- message (hidden until ring is clicked) -->
-<div id="msg" style="display:none; position:relative; z-index:3; max-width:600px; margin-top:28px;">
-  <h2 style="font-family:'Playfair Display',serif; font-size:2em; margin-bottom:12px; text-shadow:0 2px 8px rgba(0,0,0,.35); animation:textGlow 2s ease-in-out infinite;">I love you forever ❤️</h2>
+<div id="msg" style="display:none; position:relative; z-index:3; max-width:600px; margin-top:28px; text-align:center;">
+  <h2 style="font-family:'Playfair Display',serif; font-size:2em; margin-bottom:12px; text-shadow:0 2px 8px rgba(0,0,0,.35); animation:textGlow 2s ease-in-out infinite;">Our Perfect Future ❤️</h2>
   
-  <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:1.1em; color:rgba(255,255,255,.88); line-height:1.8; margin-bottom:20px;">You are my greatest treasure, my reason to smile every single day. From the moment I met you, my world became brighter, my heart fuller, and my dreams more beautiful.</p>
-  
+  <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:1.1em; color:rgba(255,255,255,.88); line-height:1.8; margin-bottom:20px;">After marriage, we'll be together forever, sharing all our dreams and making memories that last a lifetime. We will have kids and build a home that will feel cozy no matter what our life offers. Through thick and thin will stay together, will fight together and support each other. Communicate more to know each other better and grow strong by the time.</p>
+
+  <h2 style="font-family:'Playfair Display',serif; font-size:2em; margin-bottom:12px; text-shadow:0 2px 8px rgba(0,0,0,.35); animation:textGlow 2s ease-in-out infinite;">My to do list ❤️</h2>
   <div style="background:rgba(255,180,190,.08); border-left:3px solid #ffa07a; padding:16px; margin:20px 0; border-radius:8px;">
-    <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:.95em; margin-bottom:8px; color:rgba(255,255,255,.85);">💕 <strong>What you mean to me:</strong> My everything, my always</p>
-    <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:.95em; margin-bottom:8px; color:rgba(255,255,255,.85);">✨ <strong>How you make me feel:</strong> Complete and cherished</p>
-    <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:.95em; margin-bottom:8px; color:rgba(255,255,255,.85);">💖 <strong>My promise:</strong> To love you more each day</p>
-    <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:.95em; margin-bottom:0; color:rgba(255,255,255,.85);">🌟 <strong>Our future:</strong> Endless adventures together</p>
+    <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:.95em; margin-bottom:8px; color:rgba(255,255,255,.85);">💕 Take small breaks between every busy day to spend more time together.</p>
+    <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:.95em; margin-bottom:8px; color:rgba(255,255,255,.85);">✨ Rides!!! Most important, I will take you for late night rides and buy your favourite snack.</p>
+    <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:.95em; margin-bottom:8px; color:rgba(255,255,255,.85);">💖 Will do all the activities you find cringe for a husband to do after marriage.</p>
+    <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:.95em; margin-bottom:0; color:rgba(255,255,255,.85);">🌟 Wanna cry together after our first parenting to experience the pain and joy together.</p>
   </div>
   
   <!-- Extra romantic gif -->
@@ -472,7 +473,7 @@
     <img src="love.gif" alt="💖" style="width:240px; max-width:90%; border-radius:20px; box-shadow:0 8px 24px rgba(0,0,0,.3);">
   </div>
   
-  <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:.95em; color:rgba(255,255,255,.88); margin-top:20px;">The reason I love you more 💗</p>
+  <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:.95em; color:rgba(255,255,255,.88); margin-top:20px;">My reason to Smile 💗</p>
   
   <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:20px;">
     <img src="pic1.jpg" alt="" style="width:120px; height:120px; object-fit:cover; border-radius:16px; border:3px solid rgba(255,180,190,.5); box-shadow:0 4px 14px rgba(0,0,0,.3);">
@@ -571,6 +572,10 @@ function unlock(){
 // ── YES/NO button handlers ──
 let noClickCount = 0;
 const sadImages = ['sad1.jpeg', 'sad2.jpeg', 'sad3.jpeg', 'sad4.jpeg', 'sad5.jpeg', 'sad6.jpeg', 'sad7.jpeg', 'sad8.jpeg', 'sad9.jpeg', 'sad10.jpeg'];
+sadImages.forEach(src => {
+  const img = new Image();
+  img.src = src;
+});
 const sadMessages = [
   'Why did you say no cutie? 🥺',
   'Oyye again no? 😒',
